@@ -99,11 +99,12 @@
                     <input type="text" id="searchInput" placeholder="Cari nama, kelas, talenta..." class="w-full bg-[#181512] border border-[#2a2622] text-white pl-10 pr-4 py-2.5 rounded-2xl focus:outline-none focus:border-orange-500 text-xs transition-all shadow-inner h-[40px]" oninput="renderStudents()">
                 </div>
 
-                <div id="roleIndicator" class="hidden sm:flex items-center px-3.5 py-2 rounded-2xl bg-[#181512] border border-[#2a2622] text-[10px] font-bold text-stone-400 tracking-wider uppercase h-[40px] transition-all">
-                    Pengunjung
+                <div id="roleIndicator" class="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-[#181512] hover:bg-stone-800 text-stone-300 hover:text-orange-400 border border-[#2a2622] hover:border-orange-500/40 text-[11px] font-bold tracking-wide h-[40px] cursor-pointer transition-all shadow-sm" onclick="openRoleModal()" title="Klik untuk Masuk sebagai Guru">
+                    <i class="fa-solid fa-lock text-xs opacity-70"></i>
+                    <span>Masuk Guru</span>
                 </div>
 
-                <button onclick="handleMainAddAction()" id="addStudentBtn" class="flex bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-5 py-2.5 rounded-2xl font-bold transition-all shadow-lg shadow-orange-500/25 text-xs items-center gap-2 h-[40px] whitespace-nowrap">
+                <button onclick="handleMainAddAction()" id="addStudentBtn" class="hidden bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-5 py-2.5 rounded-2xl font-bold transition-all shadow-lg shadow-orange-500/25 text-xs items-center gap-2 h-[40px] whitespace-nowrap">
                     <i id="addBtnIcon" class="fa-solid fa-user-plus text-xs"></i>
                     <span id="addBtnText">Tambah Siswa</span>
                 </button>
@@ -485,27 +486,30 @@
 
         function updateRoleUI() {
             const roleIndicator = document.getElementById('roleIndicator');
-            const addBtnIcon = document.getElementById('addBtnIcon');
-            const addBtnText = document.getElementById('addBtnText');
+            const addStudentBtn = document.getElementById('addStudentBtn');
 
             if (isGuru) {
                 if(roleIndicator) {
-                    roleIndicator.innerText = "MODE GURU";
-                    roleIndicator.className = "hidden sm:flex items-center px-3.5 py-2 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-[10px] font-bold text-orange-400 tracking-wider uppercase h-[40px] cursor-pointer hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 transition-all shadow-sm";
-                    roleIndicator.title = "Klik untuk Logout";
+                    roleIndicator.innerHTML = '<i class="fa-solid fa-chalkboard-user text-xs"></i><span>MODE GURU</span>';
+                    roleIndicator.className = "flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-[10px] font-bold text-orange-400 tracking-wider uppercase h-[40px] cursor-pointer hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 transition-all shadow-sm";
+                    roleIndicator.title = "Klik untuk Keluar dari Mode Guru";
                     roleIndicator.onclick = logoutGuru;
                 }
-                if(addBtnIcon) addBtnIcon.className = "fa-solid fa-user-plus text-xs";
-                if(addBtnText) addBtnText.innerText = "Tambah Siswa";
+                if(addStudentBtn) {
+                    addStudentBtn.classList.remove('hidden');
+                    addStudentBtn.classList.add('flex');
+                }
             } else {
                 if(roleIndicator) {
-                    roleIndicator.innerText = "Pengunjung";
-                    roleIndicator.className = "hidden sm:flex items-center px-3.5 py-2 rounded-2xl bg-[#181512] border border-[#2a2622] text-[10px] font-bold text-stone-400 tracking-wider uppercase h-[40px]";
-                    roleIndicator.title = "";
-                    roleIndicator.onclick = null;
+                    roleIndicator.innerHTML = '<i class="fa-solid fa-lock text-xs opacity-70"></i><span>Masuk Guru</span>';
+                    roleIndicator.className = "flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-[#181512] hover:bg-stone-800 text-stone-300 hover:text-orange-400 border border-[#2a2622] hover:border-orange-500/40 text-[11px] font-bold tracking-wide h-[40px] cursor-pointer transition-all shadow-sm";
+                    roleIndicator.title = "Klik untuk Masuk sebagai Guru";
+                    roleIndicator.onclick = openRoleModal;
                 }
-                if(addBtnIcon) addBtnIcon.className = "fa-solid fa-user-plus text-xs";
-                if(addBtnText) addBtnText.innerText = "Tambah Siswa";
+                if(addStudentBtn) {
+                    addStudentBtn.classList.add('hidden');
+                    addStudentBtn.classList.remove('flex');
+                }
             }
         }
 
@@ -652,22 +656,9 @@
             container.innerHTML = `
                 <div class="flex flex-wrap items-center gap-2.5 w-full">
                     ${filterHtml}
-                    <button onclick="handleManageClasses()" class="px-4 py-2.5 rounded-2xl font-bold text-xs tracking-wide whitespace-nowrap transition-all duration-200 border bg-[#181512] text-orange-400 border-orange-500/30 hover:border-orange-500 hover:text-orange-300 flex items-center gap-1.5 ml-auto">
-                        <i class="fa-solid fa-pen-to-square text-xs"></i>
-                        <span>Kelola Kelas</span>
-                    </button>
                 </div>
                 <div class="w-full h-1.5 bg-gradient-to-r from-orange-500 via-orange-500 to-orange-500/10 rounded-full mt-3.5 mb-2"></div>
             `;
-        }
-
-        function handleManageClasses() {
-            if (!isGuru) {
-                showToast("Silakan login sebagai Guru untuk menambah atau mengedit siswa per kelas.", "warning");
-                openRoleModal();
-            } else {
-                openStudentFormModal();
-            }
         }
 
         function setFilter(filter) {
