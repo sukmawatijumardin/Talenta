@@ -1,0 +1,28 @@
+{
+  "name": "itaka",
+  "version": "1.0.0",
+  "description": "ITAKA - Inspirasi Talenta dan Kompetensi Anak. Aplikasi showcase portofolio dan talenta siswa.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": ["talenta", "portofolio", "siswa", "sekolah", "showcase"],
+  "author": "ITAKA Team",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "node-fetch": "^2.7.0",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

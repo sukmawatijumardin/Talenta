@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITAKA - Inspirasi Talenta dan Kompetensi Anak</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #1c1917; }
+        ::-webkit-scrollbar-thumb { background: #44403c; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f97316; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-stone-950 text-stone-100 min-h-screen flex flex-col antialiased selection:bg-orange-500 selection:text-white">
+
+    <header class="border-b border-stone-800/80 bg-stone-900/40 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+            
+            <div class="flex items-center gap-4 group relative">
+                <div class="relative inline-block">
+                    <img id="schoolLogo" src="https://placehold.co/100x100/1c1917/f97316?text=LOGO" alt="Logo" class="w-12 h-12 rounded-xl object-cover border-2 border-stone-800 shadow-md">
+                    <div class="absolute -bottom-1 -right-1 bg-orange-500 text-white rounded-md w-5 h-5 flex items-center justify-center border border-stone-950 cursor-pointer transition-transform hover:scale-110 shadow-sm" onclick="triggerLogoUpload()" title="Ganti Logo">
+                        <i class="fa-solid fa-pen text-[9px]"></i>
+                    </div>
+                    <input type="file" id="logoUpload" accept="image/*" class="hidden" onchange="handleSchoolLogoUpload(event)">
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight uppercase flex items-center gap-2">
+                        ITAKA 
+                        <span class="bg-orange-500 text-white text-[8px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider">Official</span>
+                    </h1>
+                    <p class="text-orange-400 text-xs font-semibold flex items-center gap-1.5 mt-0.5">
+                        Inspirasi Talenta dan Kompetensi Anak
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+                <div class="relative flex-1 sm:w-64">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-stone-500 text-xs"></i>
+                    <input type="text" id="searchInput" placeholder="Cari nama, kelas, talenta..." class="w-full bg-[#181512] border border-stone-800 text-white pl-9 pr-4 py-2 rounded-xl focus:outline-none focus:border-orange-500 text-xs transition-all shadow-inner h-[38px]" oninput="renderStudents()">
+                </div>
+
+                <div id="roleIndicator" class="hidden sm:flex items-center px-4 py-2 rounded-xl bg-stone-900 border border-stone-800 text-[10px] font-bold text-stone-400 tracking-wider uppercase h-[38px] transition-all">
+                    Pengunjung
+                </div>
+
+                <button onclick="handleMainAddAction()" id="addStudentBtn" class="flex bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl font-bold transition-all shadow-lg shadow-orange-500/20 text-xs items-center gap-2 h-[38px] whitespace-nowrap">
+                    <i id="addBtnIcon" class="fa-solid fa-lock text-[10px] opacity-80"></i>
+                    <span id="addBtnText">Tambah Data</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+        
+        <div class="flex flex-wrap items-center justify-center gap-2 mb-8" id="classFilterContainer"></div>
+        
+        <div id="offlineBannerAlert" class="hidden col-span-full bg-red-500/10 border border-red-500/30 p-4 rounded-2xl flex-col items-center justify-center gap-2 text-red-400 mb-6 text-center">
+            <div class="flex items-center gap-2"><i class="fa-solid fa-server-slash"></i><span class="font-bold">Mode Offline (Pratinjau)</span></div>
+            <p class="text-xs text-stone-400">Gagal terhubung ke Backend (Node.js). Menampilkan data tiruan sementara agar aplikasi tetap bisa dilihat.</p>
+        </div>
+
+        <div id="studentsGrid" class="grid grid-cols-1 gap-6 max-w-2xl mx-auto w-full"></div>
+    </main>
+
+    <footer class="border-t border-stone-800/80 bg-stone-900/20 py-6 text-center text-xs text-stone-500">
+        <p>&copy; 2026 ITAKA - Inspirasi Talenta dan Kompetensi Anak. All rights reserved.</p>
+    </footer>
+
+    <div id="roleModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-stone-900 border border-stone-800 rounded-3xl w-full max-w-sm p-6 shadow-2xl relative text-center">
+            <button onclick="closeRoleModal()" class="absolute top-4 right-4 w-8 h-8 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-400 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div id="roleSelection">
+                <div class="w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-1">Pilih Peran Anda</h3>
+                <p class="text-stone-400 text-xs mb-6">Siapakah Anda yang mencoba mengakses?</p>
+
+                <div class="flex gap-3">
+                    <button onclick="selectRole('siswa')" class="flex-1 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold py-3.5 rounded-xl text-xs transition-all flex flex-col items-center gap-2 border border-stone-700">
+                        <i class="fa-solid fa-user text-lg"></i>
+                        <span>Siswa / Tamu</span>
+                    </button>
+                    <button onclick="selectRole('guru')" class="flex-1 bg-gradient-to-br from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold py-3.5 rounded-xl text-xs transition-all shadow-lg flex flex-col items-center gap-2">
+                        <i class="fa-solid fa-chalkboard-user text-lg"></i>
+                        <span>Saya Guru</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="guruCodeSection" class="hidden">
+                <div class="w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-1">Kode Akses Guru</h3>
+                <p class="text-stone-400 text-xs mb-5">Masukkan kode keamanan Anda.</p>
+
+                <input type="password" id="guruCodeInput" placeholder="Masukkan Kode..." class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-3 text-white text-center tracking-[0.5em] focus:outline-none focus:border-orange-500 mb-2 font-bold">
+                <div id="roleErrorMsg" class="text-red-400 text-xs hidden mb-4 font-medium">Kode akses salah atau tidak terdaftar!</div>
+
+                <div class="flex gap-3 mt-4">
+                    <button type="button" onclick="openRoleModal()" class="flex-1 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold py-2.5 rounded-xl text-xs transition-all border border-stone-700">Kembali</button>
+                    <button type="button" onclick="verifyGuru()" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-lg shadow-orange-500/20">Verifikasi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="studentFormModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-stone-900 border border-stone-800 rounded-3xl w-full max-w-lg p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="modalStudentTitle" class="text-xl font-bold text-white">Tambah Data Siswa</h3>
+                <button onclick="closeStudentFormModal()" class="w-8 h-8 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-400 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="studentForm" onsubmit="handleStudentFormSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">Nama Lengkap</label>
+                    <input type="text" id="formNama" required class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">NISN</label>
+                        <input type="text" id="formNisn" required class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">Kelas</label>
+                        <select id="formKelas" required class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                            <option value="">Pilih Kelas</option>
+                            <option value="X">Kelas X</option>
+                            <option value="XI">Kelas XI</option>
+                            <option value="XII">Kelas XII</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">Sub-Kelas / Jurusan</label>
+                    <input type="text" id="formSubKelas" placeholder="Contoh: RPL 1, TKJ 2" required class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">URL Foto Profil</label>
+                    <input type="url" id="formFoto" placeholder="https://..." class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">Talenta & Keahlian</label>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" id="formTalentInput" placeholder="Misal: Robotik, UI/UX" class="flex-1 bg-stone-950 border border-stone-800 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                        <button type="button" onclick="addTalentBadge()" class="bg-stone-800 hover:bg-orange-500 hover:text-white text-stone-300 px-4 py-2 rounded-xl text-xs font-bold transition-all">Tambah</button>
+                    </div>
+                    <div id="formTalentsContainer" class="flex flex-wrap gap-1.5 min-h-[36px] p-2 bg-stone-950/50 border border-stone-800/80 rounded-xl"></div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">Deskripsi / Prestasi</label>
+                    <textarea id="formDeskripsi" rows="3" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-orange-500 resize-none"></textarea>
+                </div>
+
+                <div class="flex gap-3 pt-4 border-t border-stone-800">
+                    <button type="button" onclick="closeStudentFormModal()" class="flex-1 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-xmark"></i><span>Tutup</span>
+                    </button>
+                    <button type="submit" form="studentForm" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-lg shadow-orange-500/20 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-check"></i><span>Simpan Data</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="profileModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-stone-900 border border-stone-800 rounded-3xl w-full max-w-2xl p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto flex flex-col">
+            <div class="flex justify-between items-start mb-6">
+                <div class="flex items-center gap-4">
+                    <img id="profileModalImg" src="" alt="" class="w-16 h-16 rounded-full object-cover border-2 border-stone-700 shadow-md">
+                    <div>
+                        <h2 id="profileModalName" class="text-xl font-bold text-white">Nama Siswa</h2>
+                        <p id="profileModalClass" class="text-xs text-orange-400 font-bold mt-0.5"><span id="profileModalClassText">Kelas</span></p>
+                        <p id="profileModalNisn" class="text-xs text-stone-400 mt-0.5">NISN: -</p>
+                    </div>
+                </div>
+                <button onclick="closeProfileModal()" class="w-8 h-8 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-400 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <h4 class="text-xs text-stone-500 uppercase tracking-wider font-bold mb-2">Talenta Keahlian</h4>
+                <div id="profileModalTalents" class="flex flex-wrap gap-1.5"></div>
+            </div>
+
+            <div class="mb-6">
+                <h4 class="text-xs text-stone-500 uppercase tracking-wider font-bold mb-2">Tentang / Prestasi</h4>
+                <p id="profileModalDesc" class="text-sm text-stone-300 bg-stone-950 p-4 rounded-2xl border border-stone-800/80 leading-relaxed"></p>
+            </div>
+
+            <div class="border-t border-stone-800 pt-6 mt-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-xs text-stone-400 uppercase tracking-wider font-bold">Dokumen Portofolio</h4>
+                    <div id="uploadDocContainer" class="hidden">
+                        <input type="file" id="fileDocInput" class="hidden" accept=".pdf,.doc,.docx,.jpg,.png,.jpeg" onchange="handleFileUpload(event)">
+                        <button onclick="document.getElementById('fileDocInput').click()" class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-orange-500/20">
+                            <i class="fa-solid fa-upload text-[10px]"></i><span>Unggah File</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="profileModalDocsList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="readerModal" class="fixed inset-0 z-[60] bg-black/90 backdrop-blur-md hidden flex-col">
+        <div class="bg-stone-900 border-b border-stone-800 px-6 py-4 flex justify-between items-center shadow-lg">
+            <h3 id="readerTitle" class="text-white font-bold text-sm truncate max-w-md">Pratinjau Dokumen</h3>
+            <div class="flex items-center gap-3">
+                <a id="readerDownloadBtn" href="#" download class="bg-stone-800 hover:bg-orange-500 text-stone-300 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-download text-[10px]"></i><span>Unduh Asli</span>
+                </a>
+                <button onclick="closeReaderModal()" class="w-8 h-8 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-400 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+        <div class="flex-grow p-4 flex items-center justify-center overflow-auto" id="readerContainer"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:3000/api';
+        
+        // DAFTAR KODE AKSES GURU
+        const GURU_CODES = ['123456', '112233', 'GURU2026', 'KEPSEK-ITAKA']; 
+        
+        let isGuru = localStorage.getItem('itaka_is_guru') === 'true';
+        let studentsData = [];
+        let selectedClassFilter = 'Semua Kelas';
+        let currentEditingStudentId = null;
+        let tempTalents = [];
+        let activeProfileStudentId = null;
+        let currentBlobUrl = null; // Mencegah memory leak pada preview file
+
+        window.onload = function() {
+            updateRoleUI();
+            renderClassFilters();
+            fetchStudentsFromAPI(); 
+            
+            const savedLogo = localStorage.getItem('itaka_school_logo');
+            if (savedLogo) document.getElementById('schoolLogo').src = savedLogo;
+        };
+
+        // --- MANAJEMEN AKSES SISWA/GURU ---
+        function handleMainAddAction() {
+            if (isGuru) {
+                openStudentFormModal();
+            } else {
+                openRoleModal();
+            }
+        }
+
+        function openRoleModal() {
+            document.getElementById('roleSelection').classList.remove('hidden');
+            document.getElementById('guruCodeSection').classList.add('hidden');
+            document.getElementById('roleErrorMsg').classList.add('hidden');
+            document.getElementById('guruCodeInput').value = '';
+            
+            document.getElementById('roleModal').classList.remove('hidden');
+            document.getElementById('roleModal').classList.add('flex');
+        }
+
+        function closeRoleModal() {
+            document.getElementById('roleModal').classList.remove('flex');
+            document.getElementById('roleModal').classList.add('hidden');
+        }
+
+        function selectRole(role) {
+            if (role === 'siswa') {
+                alert("Sebagai Siswa/Pengunjung, Anda bebas mencari dan melihat portofolio. Namun akses untuk mengedit data terkunci.");
+                closeRoleModal();
+            } else if (role === 'guru') {
+                document.getElementById('roleSelection').classList.add('hidden');
+                document.getElementById('guruCodeSection').classList.remove('hidden');
+                document.getElementById('guruCodeInput').focus();
+            }
+        }
+
+        function verifyGuru() {
+            const code = document.getElementById('guruCodeInput').value;
+            if (GURU_CODES.includes(code)) {
+                isGuru = true;
+                localStorage.setItem('itaka_is_guru', 'true');
+                
+                closeRoleModal();
+                updateRoleUI();
+                renderStudents();
+                openStudentFormModal(); 
+            } else {
+                document.getElementById('roleErrorMsg').classList.remove('hidden');
+            }
+        }
+
+        function logoutGuru() {
+            if (isGuru && confirm("Keluar dari Mode Guru dan kembali menjadi Pengunjung?")) {
+                isGuru = false;
+                localStorage.setItem('itaka_is_guru', 'false');
+                updateRoleUI();
+                renderStudents();
+            }
+        }
+
+        function updateRoleUI() {
+            const roleIndicator = document.getElementById('roleIndicator');
+            const addBtnIcon = document.getElementById('addBtnIcon');
+            const addBtnText = document.getElementById('addBtnText');
+
+            if (isGuru) {
+                if(roleIndicator) {
+                    roleIndicator.innerText = "MODE GURU";
+                    roleIndicator.className = "hidden sm:flex items-center px-4 py-2 rounded-xl bg-orange-500/10 border border-orange-500/30 text-[10px] font-bold text-orange-400 tracking-wider uppercase h-[38px] cursor-pointer hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 transition-all shadow-sm";
+                    roleIndicator.title = "Klik untuk Logout";
+                    roleIndicator.onclick = logoutGuru;
+                }
+                if(addBtnIcon) addBtnIcon.className = "fa-solid fa-plus text-[10px]";
+                if(addBtnText) addBtnText.innerText = "Tambah Siswa";
+            } else {
+                if(roleIndicator) {
+                    roleIndicator.innerText = "Pengunjung";
+                    roleIndicator.className = "hidden sm:flex items-center px-4 py-2 rounded-xl bg-stone-900 border border-stone-800 text-[10px] font-bold text-stone-400 tracking-wider uppercase h-[38px]";
+                    roleIndicator.title = "";
+                    roleIndicator.onclick = null;
+                }
+                if(addBtnIcon) addBtnIcon.className = "fa-solid fa-lock text-[10px] opacity-70";
+                if(addBtnText) addBtnText.innerText = "Tambah Data";
+            }
+        }
+
+        // --- FETCH BACKEND (WITH FALLBACK) ---
+        async function fetchStudentsFromAPI() {
+            const banner = document.getElementById('offlineBannerAlert');
+            try {
+                const response = await fetch(`${API_BASE_URL}/students`);
+                if (!response.ok) throw new Error("Network error");
+                
+                studentsData = await response.json();
+                banner.classList.remove('flex');
+                banner.classList.add('hidden');
+                renderStudents();
+            } catch (error) {
+                // FALLBACK JIKA SERVER MATI (Mode Pratinjau)
+                banner.classList.remove('hidden');
+                banner.classList.add('flex');
+                
+                studentsData = [
+                    {
+                        id: "std-dummy",
+                        nama: "Ahmad Fauzi",
+                        kelas: "XII RPL 1",
+                        nisn: "0051234567",
+                        foto: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&auto=format&fit=crop&q=80",
+                        talenta: ["Robotik", "Pemrograman Web", "UI/UX Design"],
+                        deskripsi: "Siswa ini sangat mahir dalam membangun antarmuka web yang stabil dan responsif menggunakan TailwindCSS dan ReactJS.",
+                        profil_doc: []
+                    },
+                    {
+                        id: "std-dummy2",
+                        nama: "Siti Nurhaliza",
+                        kelas: "XI TKJ 2",
+                        nisn: "0068765432",
+                        foto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=80",
+                        talenta: ["Jaringan", "Cyber Security", "Fotografi"],
+                        deskripsi: "Administrator jaringan andal yang memenangkan juara 1 lomba mikrotik nasional tahun 2025.",
+                        profil_doc: []
+                    }
+                ];
+                renderStudents();
+            }
+        }
+
+        async function handleStudentFormSubmit(e) {
+            e.preventDefault();
+            if (!isGuru) return alert("Akses ditolak!");
+
+            const nama = document.getElementById('formNama').value;
+            const nisn = document.getElementById('formNisn').value;
+            const kelasUtama = document.getElementById('formKelas').value;
+            const subKelas = document.getElementById('formSubKelas').value;
+            const kelas = kelasUtama + ' ' + subKelas;
+            const foto = document.getElementById('formFoto').value || "https://placehold.co/150x150/1c1917/f97316?text=Foto";
+            const deskripsi = document.getElementById('formDeskripsi').value;
+
+            const payload = { nama, nisn, kelas, foto, deskripsi, talenta: tempTalents };
+            const btn = document.querySelector('button[form="studentForm"]');
+            if(btn) btn.disabled = true;
+
+            try {
+                const url = currentEditingStudentId ? `${API_BASE_URL}/students/${currentEditingStudentId}` : `${API_BASE_URL}/students`;
+                const method = currentEditingStudentId ? 'PUT' : 'POST';
+
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    closeStudentFormModal();
+                    await fetchStudentsFromAPI();
+                } else {
+                    alert("Gagal menyimpan data ke server.");
+                }
+            } catch (error) {
+                alert("Tidak dapat terhubung ke Backend.");
+            } finally {
+                if(btn) btn.disabled = false;
+            }
+        }
+
+        async function confirmDeleteStudent(id) {
+            if (!isGuru) return alert("Akses ditolak!");
+            
+            if (confirm("Apakah Anda yakin ingin menghapus siswa ini beserta semua dokumennya?")) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/students/${id}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        await fetchStudentsFromAPI();
+                    } else {
+                        alert("Gagal menghapus data dari server.");
+                    }
+                } catch (error) {
+                    alert("Kesalahan jaringan!");
+                }
+            }
+        }
+
+        function renderClassFilters() {
+            const container = document.getElementById('classFilterContainer');
+            const classes = ['Semua Kelas', 'Kelas X', 'Kelas XI', 'Kelas XII'];
+            
+            let filterHtml = classes.map(c => `
+                <button onclick="setFilter('${c}')" class="px-5 py-2 rounded-full font-bold text-[11px] tracking-wide whitespace-nowrap transition-all duration-300 border ${
+                    selectedClassFilter === c 
+                    ? 'bg-orange-500 text-white border-orange-500 shadow-md' 
+                    : 'bg-[#181512] text-stone-400 border-[#2a2622] hover:border-stone-600 hover:text-white'
+                }">${c}</button>
+            `).join('');
+            
+            // Tambahkan garis oranye dekoratif di bawah filter
+            container.innerHTML = `
+                <div class="flex flex-wrap items-center gap-2 w-full">
+                    ${filterHtml}
+                </div>
+                <div class="w-full max-w-3xl h-1.5 bg-gradient-to-r from-orange-500 to-orange-500/10 rounded-full mt-3 mb-2"></div>
+            `;
+        }
+
+        function setFilter(filter) {
+            selectedClassFilter = filter;
+            renderClassFilters();
+            renderStudents();
+        }
+
+        function renderStudents() {
+            const grid = document.getElementById('studentsGrid');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            grid.innerHTML = '';
+
+            const filtered = studentsData.filter(s => {
+                const matchSearch = s.nama.toLowerCase().includes(search) || 
+                                    s.talenta.some(t => t.toLowerCase().includes(search)) ||
+                                    s.kelas.toLowerCase().includes(search);
+                let matchClass = true;
+                if (selectedClassFilter !== 'Semua Kelas') {
+                    const romawi = selectedClassFilter.replace('Kelas ', '');
+                    matchClass = s.kelas.startsWith(romawi);
+                }
+                return matchSearch && matchClass;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full w-full flex flex-col items-center justify-center py-20 text-stone-600">
+                        <i class="fa-solid fa-folder-open text-5xl mb-3 opacity-40"></i>
+                        <p class="text-sm font-medium">Tidak ada data ditemukan.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const badgeColors = [
+                'text-orange-400 bg-orange-900/10 border-orange-500/30',
+                'text-pink-400 bg-pink-900/10 border-pink-500/30',
+                'text-cyan-400 bg-cyan-900/10 border-cyan-500/30'
+            ];
+
+            filtered.forEach(student => {
+                const card = document.createElement('div');
+                // DESAIN KARTU HORIZONTAL DENGAN FLEX
+                card.className = "bg-[#181512] border border-[#2a2622] rounded-3xl p-5 transition-all duration-300 hover:border-stone-700 relative flex flex-col sm:flex-row gap-6 shadow-sm";
+                
+                let adminActionsHtml = '';
+                if (isGuru) {
+                    adminActionsHtml = `
+                        <div class="flex flex-row gap-2 shrink-0">
+                            <button onclick="editStudent('${student.id}')" class="w-9 h-9 rounded-xl bg-[#2a2622] hover:bg-stone-700 text-stone-400 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Edit Data">
+                                <i class="fa-solid fa-pen text-xs"></i>
+                            </button>
+                            <button onclick="confirmDeleteStudent('${student.id}')" class="w-9 h-9 rounded-xl bg-[#2a2622] hover:bg-red-500/20 text-stone-400 hover:text-red-400 flex items-center justify-center transition-colors shadow-sm" title="Hapus Data">
+                                <i class="fa-solid fa-trash text-xs"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+
+                const talentaHtml = student.talenta.map((t, idx) => {
+                    const colorClass = badgeColors[idx % badgeColors.length];
+                    return `<span class="px-3 py-1.5 rounded-lg border ${colorClass} text-[10px] font-bold whitespace-nowrap">${t}</span>`;
+                }).join('');
+
+                card.innerHTML = `
+                    <!-- Bagian Kiri: Foto dan Tombol Portofolio -->
+                    <div class="flex flex-col gap-3 w-full sm:w-[160px] shrink-0">
+                        <img src="${student.foto}" alt="${student.nama}" class="w-full aspect-square object-cover rounded-3xl border border-[#2a2622] bg-stone-800" onerror="this.src='https://placehold.co/200x200/1c1917/f97316?text=Foto'">
+                        <button onclick="openProfile('${student.id}')" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-2.5 rounded-full font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20">
+                            <i class="fa-solid fa-id-card"></i><span>Portofolio</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Bagian Kanan: Detail Siswa -->
+                    <div class="flex-1 flex flex-col min-w-0">
+                        <div class="flex justify-between items-start gap-4 mb-2">
+                            <h3 class="text-xl sm:text-2xl font-bold text-white truncate" title="${student.nama}">${student.nama}</h3>
+                            ${adminActionsHtml}
+                        </div>
+                        
+                        <div class="flex items-center flex-wrap gap-2 mb-3">
+                            <span class="px-2.5 py-1 bg-orange-900/30 border border-orange-500/40 rounded-lg text-[10px] text-orange-400 font-bold flex items-center gap-1.5">
+                                <i class="fa-solid fa-graduation-cap"></i> ${student.kelas}
+                            </span>
+                            <span class="text-stone-600 text-[10px]">•</span>
+                            <span class="text-[11px] text-stone-400 font-medium tracking-wider">
+                                NISN: <span class="text-stone-300">${student.nisn}</span>
+                            </span>
+                        </div>
+
+                        <p class="text-stone-400 text-sm leading-relaxed line-clamp-3 mb-4">${student.deskripsi || 'Belum ada deskripsi profil.'}</p>
+                        
+                        <div class="flex flex-wrap gap-2 mt-auto">
+                            ${talentaHtml || '<span class="text-xs text-stone-600 italic">Belum ada talenta.</span>'}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openStudentFormModal() {
+            if (!isGuru) return alert("Akses ditolak!");
+            currentEditingStudentId = null;
+            tempTalents = [];
+            document.getElementById('modalStudentTitle').innerText = "Tambah Data Siswa";
+            document.getElementById('studentForm').reset();
+            renderFormTalents();
+            document.getElementById('studentFormModal').classList.remove('hidden');
+            document.getElementById('studentFormModal').classList.add('flex');
+        }
+
+        function editStudent(id) {
+            if (!isGuru) return alert("Akses ditolak!");
+            const student = studentsData.find(s => s.id === id);
+            if (!student) return;
+
+            currentEditingStudentId = id;
+            tempTalents = [...student.talenta];
+            document.getElementById('modalStudentTitle').innerText = "Edit Data Siswa";
+            
+            document.getElementById('formNama').value = student.nama;
+            document.getElementById('formNisn').value = student.nisn;
+            
+            const classParts = student.kelas.split(' ');
+            if (['X', 'XI', 'XII'].includes(classParts[0])) {
+                document.getElementById('formKelas').value = classParts[0];
+                document.getElementById('formSubKelas').value = classParts.slice(1).join(' ');
+            } else {
+                document.getElementById('formSubKelas').value = student.kelas;
+            }
+
+            document.getElementById('formFoto').value = student.foto;
+            document.getElementById('formDeskripsi').value = student.deskripsi;
+            
+            renderFormTalents();
+            document.getElementById('studentFormModal').classList.remove('hidden');
+            document.getElementById('studentFormModal').classList.add('flex');
+        }
+
+        function closeStudentFormModal() {
+            document.getElementById('studentFormModal').classList.remove('flex');
+            document.getElementById('studentFormModal').classList.add('hidden');
+        }
+
+        function addTalentBadge() {
+            const input = document.getElementById('formTalentInput');
+            const val = input.value.trim();
+            if (val && !tempTalents.includes(val)) {
+                tempTalents.push(val);
+                input.value = '';
+                renderFormTalents();
+            }
+        }
+
+        function removeFormTalent(index) {
+            tempTalents.splice(index, 1);
+            renderFormTalents();
+        }
+
+        function renderFormTalents() {
+            const container = document.getElementById('formTalentsContainer');
+            if (tempTalents.length === 0) {
+                container.innerHTML = `<span class="text-xs text-stone-600 italic px-2 py-1">Belum ada talenta.</span>`;
+                return;
+            }
+            container.innerHTML = tempTalents.map((t, idx) => `
+                <span class="px-2.5 py-1 rounded-lg bg-stone-800 text-orange-400 border border-stone-700 text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
+                    ${t}
+                    <button type="button" onclick="removeFormTalent(${idx})" class="hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                </span>
+            `).join('');
+        }
+
+        function openProfile(id) {
+            const student = studentsData.find(s => s.id === id);
+            if (!student) return;
+            activeProfileStudentId = id;
+
+            document.getElementById('profileModalImg').src = student.foto;
+            document.getElementById('profileModalName').innerText = student.nama;
+            document.getElementById('profileModalClassText').innerText = student.kelas;
+            document.getElementById('profileModalNisn').innerText = `NISN: ${student.nisn}`;
+            document.getElementById('profileModalDesc').innerText = student.deskripsi || "Belum ada deskripsi profil.";
+
+            const uploadContainer = document.getElementById('uploadDocContainer');
+            if (isGuru) uploadContainer.classList.remove('hidden');
+            else uploadContainer.classList.add('hidden');
+
+            const talentaContainer = document.getElementById('profileModalTalents');
+            talentaContainer.innerHTML = student.talenta.map(t => 
+                `<span class="px-2.5 py-1.5 rounded-lg bg-stone-800 text-stone-300 border border-stone-700 text-[10px] font-bold uppercase tracking-wider">${t}</span>`
+            ).join('') || '<span class="text-xs text-stone-600 italic">Belum ada talenta.</span>';
+
+            renderProfileDocs(student.profil_doc || []);
+            document.getElementById('profileModal').classList.remove('hidden');
+            document.getElementById('profileModal').classList.add('flex');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('flex');
+            document.getElementById('profileModal').classList.add('hidden');
+            activeProfileStudentId = null;
+        }
+
+        function renderProfileDocs(docs) {
+            const list = document.getElementById('profileModalDocsList');
+            if (docs.length === 0) {
+                list.innerHTML = `<p class="text-xs text-stone-600 italic py-2">Belum ada dokumen portofolio yang diunggah.</p>`;
+                return;
+            }
+
+            list.innerHTML = docs.map((doc, idx) => `
+                <div class="flex items-center justify-between bg-stone-950 px-4 py-3 rounded-2xl border border-stone-800/80 hover:border-stone-600 transition-colors">
+                    <div class="flex items-center gap-3 overflow-hidden cursor-pointer flex-grow group" onclick="openInlineReader('${doc.file_url}', '${doc.file_name}', '${doc.file_type}')">
+                        <i class="fa-solid ${doc.file_type === 'pdf' ? 'fa-file-pdf text-red-400' : (['jpg','jpeg','png'].includes(doc.file_type) ? 'fa-image text-emerald-400' : 'fa-file-word text-blue-400')} text-base group-hover:scale-110 transition-transform"></i>
+                        <span class="text-xs text-stone-200 font-medium truncate group-hover:text-orange-400 transition-colors">${doc.file_name}</span>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <a href="${doc.file_url}" download="${doc.file_name}" class="w-7 h-7 rounded-xl bg-stone-800 hover:bg-emerald-500 text-stone-400 hover:text-white flex items-center justify-center transition-all text-xs" title="Unduh"><i class="fa-solid fa-download"></i></a>
+                        ${isGuru ? `<button onclick="deleteProfileDoc(${idx})" class="w-7 h-7 rounded-xl bg-stone-800 hover:bg-red-500 text-stone-400 hover:text-white flex items-center justify-center transition-all text-xs" title="Hapus"><i class="fa-solid fa-trash"></i></button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function openInlineReader(url, name, type) {
+            document.getElementById('readerTitle').innerText = name;
+            document.getElementById('readerDownloadBtn').href = url;
+            document.getElementById('readerDownloadBtn').download = name;
+
+            const container = document.getElementById('readerContainer');
+            container.innerHTML = '<div class="text-stone-400 text-sm flex flex-col items-center"><i class="fa-solid fa-spinner fa-spin text-3xl mb-3"></i>Mempersiapkan pratinjau aman...</div>';
+            
+            document.getElementById('readerModal').classList.remove('hidden');
+            document.getElementById('readerModal').classList.add('flex');
+
+            try {
+                let safeUrl = url;
+                
+                // Gunakan Blob jika data dari memori (base64)
+                if (url.startsWith('data:')) {
+                    const fetchRes = await fetch(url);
+                    const blob = await fetchRes.blob();
+                    if(currentBlobUrl) URL.revokeObjectURL(currentBlobUrl);
+                    safeUrl = URL.createObjectURL(blob);
+                    currentBlobUrl = safeUrl;
+                }
+
+                if (type === 'pdf') {
+                    container.innerHTML = `<embed src="${safeUrl}#toolbar=0&navpanes=0&scrollbar=0" type="application/pdf" width="100%" height="100%" class="rounded-2xl border border-stone-800 bg-white shadow-xl max-w-4xl">`;
+                } else if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(type)) {
+                    container.innerHTML = `<img src="${safeUrl}" alt="${name}" class="max-w-full max-h-[85vh] object-contain rounded-2xl border border-stone-800 shadow-xl">`;
+                } else if (['doc', 'docx'].includes(type)) {
+                    container.innerHTML = `<div id="wordViewerContent" class="bg-white text-stone-900 p-8 rounded-2xl w-full max-w-4xl h-full max-h-[85vh] overflow-y-auto shadow-xl font-serif leading-relaxed text-sm md:text-base">Membaca dokumen Word...</div>`;
+                    
+                    const res = await fetch(safeUrl);
+                    const buffer = await res.arrayBuffer();
+                    
+                    const result = await mammoth.convertToHtml({arrayBuffer: buffer});
+                    document.getElementById('wordViewerContent').innerHTML = result.value || '<p class="text-stone-500 italic">Dokumen kosong atau tidak terbaca.</p>';
+                } else {
+                    container.innerHTML = `<div class="text-stone-400 text-sm flex flex-col items-center"><i class="fa-solid fa-triangle-exclamation text-3xl mb-3 text-orange-500"></i>Pratinjau untuk tipe file ini belum didukung. Silakan gunakan tombol unduh.</div>`;
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="text-red-400 text-sm flex flex-col items-center"><i class="fa-solid fa-circle-xmark text-3xl mb-3"></i>Gagal memuat pratinjau file.<br>Silakan unduh file secara langsung.</div>`;
+            }
+        }
+
+        function closeReaderModal() {
+            document.getElementById('readerModal').classList.remove('flex');
+            document.getElementById('readerModal').classList.add('hidden');
+            document.getElementById('readerContainer').innerHTML = '';
+            if(currentBlobUrl) {
+                URL.revokeObjectURL(currentBlobUrl);
+                currentBlobUrl = null;
+            }
+        }
+
+        async function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file || !activeProfileStudentId) return;
+            if (!isGuru) return alert("Akses ditolak!");
+
+            const uploadBtn = document.querySelector('#uploadDocContainer button');
+            const originalHTML = uploadBtn.innerHTML;
+            uploadBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[10px]"></i><span>Mengunggah...</span>`;
+            uploadBtn.disabled = true;
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('studentId', activeProfileStudentId);
+
+                const response = await fetch(`${API_BASE_URL}/upload-doc`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const student = studentsData.find(s => s.id === activeProfileStudentId);
+                    if (student) {
+                        if (!student.profil_doc) student.profil_doc = [];
+                        student.profil_doc.push(result.doc);
+                        renderProfileDocs(student.profil_doc);
+                    }
+                } else {
+                    alert("Server error. File gagal diunggah.");
+                }
+            } catch (error) {
+                alert("Kesalahan jaringan saat mengunggah.");
+            } finally {
+                uploadBtn.innerHTML = originalHTML;
+                uploadBtn.disabled = false;
+                e.target.value = ''; 
+            }
+        }
+
+        async function deleteProfileDoc(docIndex) {
+            if (!isGuru) return alert("Akses ditolak!");
+
+            const student = studentsData.find(s => s.id === activeProfileStudentId);
+            if (student && student.profil_doc) {
+                const doc = student.profil_doc[docIndex];
+                
+                if (confirm(`Yakin ingin menghapus dokumen "${doc.file_name}"?`)) {
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/delete-doc/${student.id}/${encodeURIComponent(doc.file_name)}`, {
+                            method: 'DELETE'
+                        });
+
+                        if (response.ok) {
+                            student.profil_doc.splice(docIndex, 1);
+                            renderProfileDocs(student.profil_doc);
+                        } else {
+                            alert("Gagal menghapus file.");
+                        }
+                    } catch (error) {
+                        alert("Kesalahan jaringan saat menghapus dokumen.");
+                    }
+                }
+            }
+        }
+
+        function triggerLogoUpload() {
+            if (!isGuru) return alert("Hanya Guru yang dapat mengganti logo sekolah.");
+            document.getElementById('logoUpload').click();
+        }
+
+        function handleSchoolLogoUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('schoolLogo').src = event.target.result;
+                    localStorage.setItem('itaka_school_logo', event.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+</html>

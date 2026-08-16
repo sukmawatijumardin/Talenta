@@ -1,0 +1,34 @@
+# ============================================
+# Baserow Self-Hosted — Docker Compose
+# ============================================
+# Menjalankan instance Baserow lokal sebagai database
+# untuk aplikasi ITAKA (baik lokal maupun Vercel).
+#
+# Penggunaan:
+#   docker compose -f docker-compose.baserow.yml up -d
+#
+# Akses Baserow di: http://localhost:8080
+# ============================================
+
+services:
+  baserow:
+    container_name: itaka-baserow
+    image: baserow/baserow:latest
+    environment:
+      # Ganti dengan domain/IP server Anda jika bukan localhost
+      BASEROW_PUBLIC_URL: "http://localhost:8080"
+    ports:
+      - "8080:80"
+    volumes:
+      - baserow_data:/baserow/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost/api/_health/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  baserow_data:
+    driver: local
