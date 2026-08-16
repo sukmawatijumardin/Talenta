@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ITAKA - Inspirasi Talenta dan Kompetensi Anak</title>
-    <meta name="description" content="ITAKA — Platform showcase portofolio dan talenta siswa. Temukan bakat dan keahlian peserta didik terbaik.">
+    <title>SMKN 1 PAREPARE - Ruang Talenta & Digital Portofolio</title>
+    <meta name="description" content="SMKN 1 PAREPARE — Ruang Talenta & Digital Portofolio. Platform showcase portofolio dan talenta siswa terbaik.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -47,7 +47,7 @@
         }
     </style>
 </head>
-<body class="bg-stone-950 text-stone-100 min-h-screen flex flex-col antialiased selection:bg-orange-500 selection:text-white">
+<body class="bg-[#0e0c0a] text-stone-100 min-h-screen flex flex-col antialiased selection:bg-orange-500 selection:text-white">
 
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
@@ -67,41 +67,45 @@
         </div>
     </div>
 
-    <header class="border-b border-stone-800/80 bg-stone-900/40 backdrop-blur-md sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+    <header class="border-b border-[#2a2622]/80 bg-[#14110e]/90 backdrop-blur-md sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             
-            <div class="flex items-center gap-4 group relative">
-                <div class="relative inline-block">
-                    <img id="schoolLogo" src="https://placehold.co/100x100/1c1917/f97316?text=LOGO" alt="Logo" class="w-12 h-12 rounded-xl object-cover border-2 border-stone-800 shadow-md">
-                    <div class="absolute -bottom-1 -right-1 bg-orange-500 text-white rounded-md w-5 h-5 flex items-center justify-center border border-stone-950 cursor-pointer transition-transform hover:scale-110 shadow-sm" onclick="triggerLogoUpload()" title="Ganti Logo">
-                        <i class="fa-solid fa-pen text-[9px]"></i>
+            <div class="flex items-center gap-3.5 group relative">
+                <div class="relative inline-block shrink-0">
+                    <img id="schoolLogo" src="https://images.unsplash.com/photo-1562774053-701939374585?w=150&auto=format&fit=crop&q=80" alt="Logo SMKN 1 Parepare" class="w-14 h-14 rounded-2xl object-cover border-2 border-orange-500/60 shadow-md">
+                    <div class="absolute -bottom-1 -right-1 bg-stone-900 text-orange-400 hover:text-white hover:bg-orange-500 rounded-full w-6 h-6 flex items-center justify-center border border-orange-500/80 cursor-pointer transition-all hover:scale-110 shadow-sm" onclick="triggerLogoUpload()" title="Ganti Logo">
+                        <i class="fa-solid fa-pen text-[10px]"></i>
                     </div>
                     <input type="file" id="logoUpload" accept="image/*" class="hidden" onchange="handleSchoolLogoUpload(event)">
                 </div>
                 <div>
-                    <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight uppercase flex items-center gap-2">
-                        ITAKA 
-                        <span class="bg-orange-500 text-white text-[8px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider">Official</span>
-                    </h1>
-                    <p class="text-orange-400 text-xs font-semibold flex items-center gap-1.5 mt-0.5">
-                        Inspirasi Talenta dan Kompetensi Anak
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight uppercase">
+                            SMKN 1 PAREPARE
+                        </h1>
+                        <span class="bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-md shadow-orange-500/25">
+                            OFFICIAL
+                        </span>
+                    </div>
+                    <p class="text-orange-400 text-xs sm:text-sm font-semibold flex items-center gap-1.5 mt-0.5">
+                        <i class="fa-solid fa-graduation-cap text-orange-400"></i> Ruang Talenta & Digital Portofolio
                     </p>
                 </div>
             </div>
 
             <div class="flex flex-wrap items-center gap-3">
-                <div class="relative flex-1 sm:w-64">
+                <div class="relative flex-1 sm:w-72">
                     <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-stone-500 text-xs"></i>
-                    <input type="text" id="searchInput" placeholder="Cari nama, kelas, talenta..." class="w-full bg-[#181512] border border-stone-800 text-white pl-9 pr-4 py-2 rounded-xl focus:outline-none focus:border-orange-500 text-xs transition-all shadow-inner h-[38px]" oninput="renderStudents()">
+                    <input type="text" id="searchInput" placeholder="Cari nama, kelas, talenta..." class="w-full bg-[#181512] border border-[#2a2622] text-white pl-10 pr-4 py-2.5 rounded-2xl focus:outline-none focus:border-orange-500 text-xs transition-all shadow-inner h-[40px]" oninput="renderStudents()">
                 </div>
 
-                <div id="roleIndicator" class="hidden sm:flex items-center px-4 py-2 rounded-xl bg-stone-900 border border-stone-800 text-[10px] font-bold text-stone-400 tracking-wider uppercase h-[38px] transition-all">
+                <div id="roleIndicator" class="hidden sm:flex items-center px-3.5 py-2 rounded-2xl bg-[#181512] border border-[#2a2622] text-[10px] font-bold text-stone-400 tracking-wider uppercase h-[40px] transition-all">
                     Pengunjung
                 </div>
 
-                <button onclick="handleMainAddAction()" id="addStudentBtn" class="flex bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl font-bold transition-all shadow-lg shadow-orange-500/20 text-xs items-center gap-2 h-[38px] whitespace-nowrap">
-                    <i id="addBtnIcon" class="fa-solid fa-lock text-[10px] opacity-80"></i>
-                    <span id="addBtnText">Tambah Data</span>
+                <button onclick="handleMainAddAction()" id="addStudentBtn" class="flex bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-5 py-2.5 rounded-2xl font-bold transition-all shadow-lg shadow-orange-500/25 text-xs items-center gap-2 h-[40px] whitespace-nowrap">
+                    <i id="addBtnIcon" class="fa-solid fa-user-plus text-xs"></i>
+                    <span id="addBtnText">Tambah Siswa</span>
                 </button>
             </div>
         </div>
@@ -487,21 +491,21 @@
             if (isGuru) {
                 if(roleIndicator) {
                     roleIndicator.innerText = "MODE GURU";
-                    roleIndicator.className = "hidden sm:flex items-center px-4 py-2 rounded-xl bg-orange-500/10 border border-orange-500/30 text-[10px] font-bold text-orange-400 tracking-wider uppercase h-[38px] cursor-pointer hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 transition-all shadow-sm";
+                    roleIndicator.className = "hidden sm:flex items-center px-3.5 py-2 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-[10px] font-bold text-orange-400 tracking-wider uppercase h-[40px] cursor-pointer hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 transition-all shadow-sm";
                     roleIndicator.title = "Klik untuk Logout";
                     roleIndicator.onclick = logoutGuru;
                 }
-                if(addBtnIcon) addBtnIcon.className = "fa-solid fa-plus text-[10px]";
+                if(addBtnIcon) addBtnIcon.className = "fa-solid fa-user-plus text-xs";
                 if(addBtnText) addBtnText.innerText = "Tambah Siswa";
             } else {
                 if(roleIndicator) {
                     roleIndicator.innerText = "Pengunjung";
-                    roleIndicator.className = "hidden sm:flex items-center px-4 py-2 rounded-xl bg-stone-900 border border-stone-800 text-[10px] font-bold text-stone-400 tracking-wider uppercase h-[38px]";
+                    roleIndicator.className = "hidden sm:flex items-center px-3.5 py-2 rounded-2xl bg-[#181512] border border-[#2a2622] text-[10px] font-bold text-stone-400 tracking-wider uppercase h-[40px]";
                     roleIndicator.title = "";
                     roleIndicator.onclick = null;
                 }
-                if(addBtnIcon) addBtnIcon.className = "fa-solid fa-lock text-[10px] opacity-70";
-                if(addBtnText) addBtnText.innerText = "Tambah Data";
+                if(addBtnIcon) addBtnIcon.className = "fa-solid fa-user-plus text-xs";
+                if(addBtnText) addBtnText.innerText = "Tambah Siswa";
             }
         }
 
@@ -517,6 +521,7 @@
                 studentsData = await response.json();
                 banner.classList.remove('flex');
                 banner.classList.add('hidden');
+                renderClassFilters();
                 renderStudents();
             } catch (error) {
                 // FALLBACK JIKA SERVER MATI (Mode Pratinjau)
@@ -525,26 +530,27 @@
                 
                 studentsData = [
                     {
-                        id: "std-dummy",
+                        id: "std-001",
                         nama: "Ahmad Fauzi",
                         kelas: "XII RPL 1",
                         nisn: "0051234567",
                         foto: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&auto=format&fit=crop&q=80",
                         talenta: ["Robotik", "Pemrograman Web", "UI/UX Design"],
-                        deskripsi: "Siswa ini sangat mahir dalam membangun antarmuka web yang stabil dan responsif menggunakan TailwindCSS dan ReactJS.",
+                        deskripsi: "Juara 1 LKS Rekayasa Perangkat Lunak 2025 SMKN 1 Parepare. Menguasai Laravel, ReactJS, dan IoT Python.",
                         profil_doc: []
                     },
                     {
-                        id: "std-dummy2",
+                        id: "std-002",
                         nama: "Siti Nurhaliza",
                         kelas: "XI TKJ 2",
                         nisn: "0068765432",
                         foto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=80",
                         talenta: ["Jaringan", "Cyber Security", "Fotografi"],
-                        deskripsi: "Administrator jaringan andal yang memenangkan juara 1 lomba mikrotik nasional tahun 2025.",
+                        deskripsi: "Administrator Jaringan Certified Mikrotik (MTCNA) dan Vokalis Utama Seni Musik Sekolah.",
                         profil_doc: []
                     }
                 ];
+                renderClassFilters();
                 renderStudents();
             }
         }
@@ -629,22 +635,39 @@
         // ==========================================
         function renderClassFilters() {
             const container = document.getElementById('classFilterContainer');
-            const classes = ['Semua Kelas', 'Kelas X', 'Kelas XI', 'Kelas XII'];
+            const defaultClasses = ['Semua Kelas', 'X RPL 1', 'X TKJ 1', 'XI RPL 1', 'XI TKJ 2', 'XII RPL 1', 'XII TKJ 1'];
             
-            let filterHtml = classes.map(c => `
-                <button onclick="setFilter('${c}')" class="px-5 py-2 rounded-full font-bold text-[11px] tracking-wide whitespace-nowrap transition-all duration-300 border ${
+            // Menggabungkan kelas dari data siswa jika ada kelas lain
+            const dynamicClasses = Array.from(new Set(studentsData.map(s => s.kelas).filter(Boolean)));
+            const allClasses = Array.from(new Set([...defaultClasses, ...dynamicClasses]));
+            
+            let filterHtml = allClasses.map(c => `
+                <button onclick="setFilter('${c}')" class="px-4 sm:px-5 py-2.5 rounded-2xl font-bold text-xs tracking-wide whitespace-nowrap transition-all duration-200 border ${
                     selectedClassFilter === c 
-                    ? 'bg-orange-500 text-white border-orange-500 shadow-md' 
-                    : 'bg-[#181512] text-stone-400 border-[#2a2622] hover:border-stone-600 hover:text-white'
+                    ? 'bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-500/25' 
+                    : 'bg-[#181512] text-stone-300 border-[#2a2622] hover:border-stone-600 hover:text-white'
                 }">${c}</button>
             `).join('');
             
             container.innerHTML = `
-                <div class="flex flex-wrap items-center gap-2 w-full">
+                <div class="flex flex-wrap items-center gap-2.5 w-full">
                     ${filterHtml}
+                    <button onclick="handleManageClasses()" class="px-4 py-2.5 rounded-2xl font-bold text-xs tracking-wide whitespace-nowrap transition-all duration-200 border bg-[#181512] text-orange-400 border-orange-500/30 hover:border-orange-500 hover:text-orange-300 flex items-center gap-1.5 ml-auto">
+                        <i class="fa-solid fa-pen-to-square text-xs"></i>
+                        <span>Kelola Kelas</span>
+                    </button>
                 </div>
-                <div class="w-full max-w-3xl h-1.5 bg-gradient-to-r from-orange-500 to-orange-500/10 rounded-full mt-3 mb-2"></div>
+                <div class="w-full h-1.5 bg-gradient-to-r from-orange-500 via-orange-500 to-orange-500/10 rounded-full mt-3.5 mb-2"></div>
             `;
+        }
+
+        function handleManageClasses() {
+            if (!isGuru) {
+                showToast("Silakan login sebagai Guru untuk menambah atau mengedit siswa per kelas.", "warning");
+                openRoleModal();
+            } else {
+                openStudentFormModal();
+            }
         }
 
         function setFilter(filter) {
@@ -664,8 +687,7 @@
                                     s.kelas.toLowerCase().includes(search);
                 let matchClass = true;
                 if (selectedClassFilter !== 'Semua Kelas') {
-                    const romawi = selectedClassFilter.replace('Kelas ', '');
-                    matchClass = s.kelas.startsWith(romawi);
+                    matchClass = s.kelas === selectedClassFilter || s.kelas.toLowerCase().includes(selectedClassFilter.toLowerCase());
                 }
                 return matchSearch && matchClass;
             });
@@ -680,24 +702,26 @@
                 return;
             }
 
-            const badgeColors = [
-                'text-orange-400 bg-orange-900/10 border-orange-500/30',
-                'text-pink-400 bg-pink-900/10 border-pink-500/30',
-                'text-cyan-400 bg-cyan-900/10 border-cyan-500/30'
+            const badgeStyles = [
+                'text-orange-400 bg-orange-950/40 border border-orange-500/40',
+                'text-pink-400 bg-pink-950/40 border border-pink-500/40',
+                'text-cyan-400 bg-cyan-950/40 border border-cyan-500/40',
+                'text-emerald-400 bg-emerald-950/40 border border-emerald-500/40',
+                'text-amber-400 bg-amber-950/40 border border-amber-500/40'
             ];
 
             filtered.forEach(student => {
                 const card = document.createElement('div');
-                card.className = "bg-[#181512] border border-[#2a2622] rounded-3xl p-5 transition-all duration-300 hover:border-stone-700 relative flex flex-col sm:flex-row gap-6 shadow-sm";
+                card.className = "bg-[#181512] border border-[#2a2622] rounded-3xl p-6 transition-all duration-300 hover:border-stone-700 relative flex flex-col sm:flex-row gap-6 shadow-sm";
                 
                 let adminActionsHtml = '';
                 if (isGuru) {
                     adminActionsHtml = `
                         <div class="flex flex-row gap-2 shrink-0">
-                            <button onclick="editStudent('${student.id}')" class="w-9 h-9 rounded-xl bg-[#2a2622] hover:bg-stone-700 text-stone-400 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Edit Data">
+                            <button onclick="editStudent('${student.id}')" class="w-9 h-9 rounded-xl bg-[#24201c] hover:bg-stone-700 text-stone-400 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Edit Data">
                                 <i class="fa-solid fa-pen text-xs"></i>
                             </button>
-                            <button onclick="confirmDeleteStudent('${student.id}')" class="w-9 h-9 rounded-xl bg-[#2a2622] hover:bg-red-500/20 text-stone-400 hover:text-red-400 flex items-center justify-center transition-colors shadow-sm" title="Hapus Data">
+                            <button onclick="confirmDeleteStudent('${student.id}')" class="w-9 h-9 rounded-xl bg-[#24201c] hover:bg-red-500/20 text-stone-400 hover:text-red-400 flex items-center justify-center transition-colors shadow-sm" title="Hapus Data">
                                 <i class="fa-solid fa-trash text-xs"></i>
                             </button>
                         </div>
@@ -705,35 +729,37 @@
                 }
 
                 const talentaHtml = student.talenta.map((t, idx) => {
-                    const colorClass = badgeColors[idx % badgeColors.length];
-                    return `<span class="px-3 py-1.5 rounded-lg border ${colorClass} text-[10px] font-bold whitespace-nowrap">${t}</span>`;
+                    const colorClass = badgeStyles[idx % badgeStyles.length];
+                    return `<span class="px-3.5 py-1.5 rounded-xl ${colorClass} text-xs font-bold whitespace-nowrap">${t}</span>`;
                 }).join('');
 
                 card.innerHTML = `
-                    <div class="flex flex-col gap-3 w-full sm:w-[160px] shrink-0">
-                        <img src="${student.foto}" alt="${student.nama}" class="w-full aspect-square object-cover rounded-3xl border border-[#2a2622] bg-stone-800" onerror="this.src='https://placehold.co/200x200/1c1917/f97316?text=Foto'">
-                        <button onclick="openProfile('${student.id}')" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-2.5 rounded-full font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20">
+                    <!-- Bagian Kiri: Foto dan Tombol Portofolio -->
+                    <div class="flex flex-col gap-3 w-full sm:w-[155px] shrink-0">
+                        <img src="${student.foto}" alt="${student.nama}" class="w-full aspect-square object-cover rounded-3xl border border-[#2a2622] bg-stone-800 shadow-inner" onerror="this.src='https://placehold.co/200x200/1c1917/f97316?text=Foto'">
+                        <button onclick="openProfile('${student.id}')" class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white py-2.5 rounded-2xl font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20">
                             <i class="fa-solid fa-id-card"></i><span>Portofolio</span>
                         </button>
                     </div>
                     
+                    <!-- Bagian Kanan: Detail Siswa -->
                     <div class="flex-1 flex flex-col min-w-0">
                         <div class="flex justify-between items-start gap-4 mb-2">
-                            <h3 class="text-xl sm:text-2xl font-bold text-white truncate" title="${student.nama}">${student.nama}</h3>
+                            <h3 class="text-xl sm:text-2xl font-bold text-white truncate tracking-tight" title="${student.nama}">${student.nama}</h3>
                             ${adminActionsHtml}
                         </div>
                         
-                        <div class="flex items-center flex-wrap gap-2 mb-3">
-                            <span class="px-2.5 py-1 bg-orange-900/30 border border-orange-500/40 rounded-lg text-[10px] text-orange-400 font-bold flex items-center gap-1.5">
-                                <i class="fa-solid fa-graduation-cap"></i> ${student.kelas}
+                        <div class="flex items-center flex-wrap gap-2.5 mb-3">
+                            <span class="px-3 py-1 bg-amber-950/40 border border-orange-500/50 rounded-xl text-[11px] text-orange-400 font-bold flex items-center gap-1.5">
+                                <i class="fa-solid fa-graduation-cap text-[11px]"></i> ${student.kelas}
                             </span>
-                            <span class="text-stone-600 text-[10px]">•</span>
-                            <span class="text-[11px] text-stone-400 font-medium tracking-wider">
-                                NISN: <span class="text-stone-300">${student.nisn}</span>
+                            <span class="text-stone-600 text-xs">•</span>
+                            <span class="text-xs text-stone-400 font-medium tracking-wider">
+                                NISN: <span class="text-stone-300 font-semibold">${student.nisn}</span>
                             </span>
                         </div>
 
-                        <p class="text-stone-400 text-sm leading-relaxed line-clamp-3 mb-4">${student.deskripsi || 'Belum ada deskripsi profil.'}</p>
+                        <p class="text-stone-300 text-sm leading-relaxed line-clamp-3 mb-4">${student.deskripsi || 'Belum ada deskripsi profil.'}</p>
                         
                         <div class="flex flex-wrap gap-2 mt-auto">
                             ${talentaHtml || '<span class="text-xs text-stone-600 italic">Belum ada talenta.</span>'}
